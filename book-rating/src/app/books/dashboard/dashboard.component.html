@@ -1,0 +1,3 @@
+<div *ngFor="let book of books; odd as o" [ngClass]="{gray: o}">
+  <br-book [book]="book" (rated)="updateAndSort($event)"></br-book>
+</div>
