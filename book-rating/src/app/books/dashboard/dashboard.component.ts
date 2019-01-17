@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Book} from '../shared/book';
+import {BookStoreService} from '../shared/book-store.service';
 
 @Component({
   selector: 'br-dashboard',
@@ -8,42 +9,31 @@ import {Book} from '../shared/book';
 })
 export class DashboardComponent implements OnInit {
 
-  books: Book[];
+  books: Book[] = [];
 
-  constructor() {
-    console.log('constructor', this);
+  constructor(private bookStore: BookStoreService) {
+    Object.defineProperty(Array.prototype, 'sortByRating', {
+      value: function () {
+        return this.sort((b1, b2) => b2.rating - b1.rating);
+      }
+    });
   }
 
   ngOnInit() {
-    console.log('ngOnInit', this);
-    this.books = [{
-      isbn: '001',
-      title: 'Elegant Objects',
-      description: 'OOP',
-      rating: 1
-    }, {
-      isbn: '002',
-      title: 'Clean Architecture',
-      description: 'Design',
-      rating: 2
-    }, {
-      isbn: '003',
-      title: 'Clean Code',
-      description: 'Programming',
-      rating: 3
-    }, {
-      isbn: '004',
-      title: 'Domain-Driven Development',
-      description: 'Programming',
-      rating: 4
-    }]
-      .sort((b1, b2) => b2.rating - b1.rating);
+    this.bookStore.getAll()
+      .subscribe(books => this.books = this.sortByRating(books));
   }
 
   updateAndSort(book: Book) {
-    this.books = this.books
-      .map(b => b.isbn === book.isbn ? book : b)
-      .sort((b1, b2) => b2.rating - b1.rating);
+    this.books = this.sortByRating(this.books
+      .map(b => b.isbn === book.isbn ? book : b));
   }
 
+  createAndSort(book: Book) {
+    this.books = this.sortByRating([...this.books, book]);
+  }
+
+  private sortByRating(books: Book[]): Book[] {
+    return books.sort((b1, b2) => b2.rating - b1.rating);
+  }
 }
