@@ -1,22 +1,29 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { BookComponent } from './book.component';
+import {BookComponent} from './book.component';
 import {BookRatingService} from '../shared/book-rating.service';
+import {By} from '@angular/platform-browser';
 
 describe('BookComponent', () => {
   let component: BookComponent;
   let fixture: ComponentFixture<BookComponent>;
 
+  const ratingMock = {
+    rateUp: () => {
+    }
+  };
+
   beforeEach(async(() => {
+    spyOn(ratingMock, 'rateUp');
+
     TestBed.configureTestingModule({
-      declarations: [ BookComponent ],
+      declarations: [BookComponent],
       providers: [{
         // don't take the book rating service from the DI container
         provide: BookRatingService,
-        useValue: undefined
+        useValue: ratingMock
       }]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -36,6 +43,16 @@ describe('BookComponent', () => {
   });
 
   it('should forward the rateUp to the book rating service', () => {
-    
+    component.rateUp();
+    expect(ratingMock.rateUp).toHaveBeenCalledTimes(1);
+  });
+
+  it('should forward the rateUp to the book rating service when the button is clicked', () => {
+    const rateUpButton = fixture.debugElement
+      .query(By.css('[rateUpButton]'))
+      .nativeElement as HTMLButtonElement;
+
+    rateUpButton.click();
+    expect(ratingMock.rateUp).toHaveBeenCalledTimes(1);
   });
 });
