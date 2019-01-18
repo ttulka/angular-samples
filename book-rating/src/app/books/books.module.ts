@@ -7,13 +7,15 @@ import {BookComponent} from './book/book.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {RepeatDirective} from '../general/repeat.directive';
 import {CreateBookComponent} from './create-book/create-book.component';
+import { BookDetailComponent } from './book-detail/book-detail.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     BookComponent,
     RepeatDirective,
-    CreateBookComponent
+    CreateBookComponent,
+    BookDetailComponent
   ],
   imports: [
     CommonModule,

@@ -12,15 +12,10 @@ export class DashboardComponent implements OnInit {
   books: Book[] = [];
 
   constructor(private bookStore: BookStoreService) {
-    Object.defineProperty(Array.prototype, 'sortByRating', {
-      value: function () {
-        return this.sort((b1, b2) => b2.rating - b1.rating);
-      }
-    });
   }
 
   ngOnInit() {
-    this.bookStore.getAll()
+    this.bookStore.listBooks()
       .subscribe(books => this.books = this.sortByRating(books));
   }
 
