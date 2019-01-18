@@ -5,7 +5,6 @@ import {Book} from '../shared/book';
 import {BookStoreService} from '../shared/book-store.service';
 import {select, Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {LoadBooks} from '../actions/book.actions';
 import {getAllBooks, getBooksLoading} from '../selectors/book.selector';
 
 @Component({
@@ -15,13 +14,15 @@ import {getAllBooks, getBooksLoading} from '../selectors/book.selector';
 })
 export class DashboardComponent implements OnInit {
 
-  loading$: Observable<boolean> = this.stateStore.pipe(select(getBooksLoading));
-  books$: Observable<Book[]> = this.stateStore.pipe(select(getAllBooks));
+  loading$: Observable<boolean> = of(false);
+  books$: Observable<Book[]> = of([]);
 
-  constructor(private service: BookStoreService, private stateStore: Store<State>) { }
+  constructor(private service: BookStoreService, private stateStore: Store<State>) {
+  }
 
   ngOnInit() {
-    this.stateStore.dispatch(new LoadBooks());
+    this.loading$ = this.stateStore.pipe(select(getBooksLoading));
+    this.books$ = this.stateStore.pipe(select(getAllBooks));
   }
 
   doRateUp(book: Book) {
